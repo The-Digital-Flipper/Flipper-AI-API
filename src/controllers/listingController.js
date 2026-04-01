@@ -8,6 +8,17 @@ const { successResponse, errorResponse } = require('../utils/response');
 const logger = require('../utils/logger');
 
 /**
+ * Escape special regex characters in a user-provided string to prevent
+ * ReDoS attacks when constructing MongoDB regex filters.
+ *
+ * @param {string} str
+ * @returns {string}
+ */
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
  * POST /api/listings/scrape
  * Trigger an on-demand scrape and store results.
  */
@@ -50,8 +61,8 @@ async function getListings(req, res) {
 
   const filter = { isActive: true };
   if (dealsOnly === 'true') filter['analysis.isDeal'] = true;
-  if (make) filter.make = new RegExp(make, 'i');
-  if (model) filter.model = new RegExp(model, 'i');
+  if (make) filter.make = new RegExp(escapeRegex(make), 'i');
+  if (model) filter.model = new RegExp(escapeRegex(model), 'i');
   if (maxPrice) filter.price = { $lte: Number(maxPrice) };
   if (minProfit) filter['analysis.profitMarginPercent'] = { $gte: Number(minProfit) };
 

@@ -39,7 +39,7 @@ async function register(req, res) {
 async function login(req, res) {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email }).select('+password');
+  const user = await User.findOne({ email: { $eq: String(email) } }).select('+password');
   if (!user || !(await user.comparePassword(password))) {
     return errorResponse(res, 'Invalid email or password', 401);
   }

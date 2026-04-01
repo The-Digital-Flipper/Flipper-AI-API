@@ -211,4 +211,4 @@ async function scrapeListings(options = {}) {
   }
 }
 
-module.exports = { scrapeListings, parseTitleDetails, estimateListingDetails: parseTitleDetails };
+module.exports = { scrapeListings, parseTitleDetails };
